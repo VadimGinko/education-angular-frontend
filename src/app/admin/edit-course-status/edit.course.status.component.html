@@ -1,0 +1,51 @@
+<div style="margin: 50px 50px 50px 50px;">
+  <h1 align="center">Управление статусом курсов</h1>
+  <mat-form-field style="display: flex; justify-content: center;" appearance="standard">
+    <mat-label>Поиск</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Java" #input>
+  </mat-form-field>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="courses" matSort>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Название курса</th>
+        <td mat-cell *matCellDef="let course">{{ course.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Тип</th>
+        <td mat-cell *matCellDef="let course">{{ course.type.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="publisher">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Создатель курса</th>
+        <td mat-cell *matCellDef="let course">{{ course.publisher.email }}
+          <a *ngIf="course.publisher.link != null" target="_blank" href="{{ course.publisher.link }}"> (соц. сеть)</a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+        <td mat-cell *matCellDef="let course">
+          <div *ngIf="course.status == 'ACTIVE'">Активный</div>
+          <div *ngIf="course.status == 'IN_ACTIVE'">Неактивный</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let course">
+
+          <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3"
+            (click)="editCourse(course)">
+            <div *ngIf="course.status == 'ACTIVE'">деактивировать</div>
+            <div *ngIf="course.status == 'IN_ACTIVE'">активировать</div>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of periodic elements">
+    </mat-paginator>
+  </div>
+</div>

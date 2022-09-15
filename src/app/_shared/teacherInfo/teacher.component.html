@@ -1,0 +1,10 @@
+<mat-dialog-content class="mat-typography">
+  <h3 align="center">Преподаватель курса</h3>
+  <p>Имя: {{ user.firstName }}</p>
+  <p>Фамилия: {{ user.lastName }}</p>
+  <p *ngIf="user.description">О себе: {{ user.description }}</p>
+  <a target="_blank" *ngIf="user.link" href="{{ user.link }}">Ссылка на соц. сеть</a>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Ок</button>
+</mat-dialog-actions>

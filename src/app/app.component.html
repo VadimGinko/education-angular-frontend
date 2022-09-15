@@ -1,0 +1,30 @@
+﻿<nav class="navbar navbar-expand navbar-dark" style="background-color: #3f51b5" *ngIf="currentUser">
+  <div class="navbar-nav" style="display: flex; flex: 1">
+    <div style="display: flex; flex: 1">
+      <a style="opacity: 1;" class="nav-link active" *ngIf="userRole" routerLink="/user">Каталог</a>
+
+      <a class="nav-link active" *ngIf="adminRole" routerLink="/admin/course/type">Редактировать типы курсов</a>
+      <a class="nav-link active" *ngIf="adminRole" routerLink="/admin/user-status">Изменить статус пользователя либо учителя</a>
+      <a class="nav-link active" *ngIf="adminRole" routerLink="/admin/course/status">Редактировать статус курсов</a>
+
+      <a class="nav-link active" *ngIf="teacherRole" routerLink="/teacher/course/create">Создать курс</a>
+      <a class="nav-link active" *ngIf="teacherRole" routerLink="/teacher/task">Управление курсом</a>
+      <a class="nav-link active" *ngIf="teacherRole" routerLink="/teacher/course/progress">Проверка заданий курса</a>
+    </div>
+    <div style="display: flex;">
+      <a *ngIf="teacherRole" class="active nav-link" routerLink="/personal-teacher">
+        Персональная информация
+      </a>
+      <a *ngIf="userRole" class="active nav-link" routerLink="/personal-user" routerLinkActive="active">
+        Персональная информация
+      </a>
+      <a class="nav-item nav-link" (click)="logout()">Выйти</a>
+    </div>
+  </div>
+</nav>
+
+<div>
+  <router-outlet></router-outlet>
+</div>
+
+<div></div>

@@ -1,0 +1,105 @@
+<div style="margin: 50px 50px 50px 50px;">
+
+  <div *ngIf="courseTypes" style="margin-bottom: 30px;">
+    <h1 align="center">Управление типами курсов </h1>
+    <h3 align="center">
+      Преподаватели курсов будут выбирать к какому из этих типов их отнести.
+      Выбирайте название относящееся к терминологии айти.
+
+    </h3>
+    <div style="display: flex; justify-content: center;" >
+      <table style="margin-bottom: 15px;" mat-table [dataSource]="courseTypes">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Название типа курса</th>
+          <td mat-cell *matCellDef="let courseType">{{ courseType.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let courseType">
+            <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3"
+              (click)="onEditForm(courseType)">
+              изменить
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="remove">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let courseType">
+            <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3"
+              (click)="onDelete(courseType)">
+              удалить
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    <h3 *ngIf="error" style="color: red; margin-top: 10px; text-align: center;">{{error}}</h3>
+    <div *ngIf="editTaskEnabled">
+      <edit-task></edit-task>
+    </div>
+    <div *ngIf="editLinksEnabled">
+      <edit-links></edit-links>
+    </div>
+
+    <div style="display:flex; justify-content: center">
+      <form *ngIf="!editFormFlag" [formGroup]="createTypeForm" style="display: flex;">
+        <div class="form-group">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>название</mat-label>
+            <input type="text" matInput formControlName="createTypeName" />
+            <mat-error *ngIf="
+                getCreateForm.createTypeName.errors &&
+                getCreateForm.createTypeName.errors.dublicate
+              ">
+              Не удалось добавить новый тип куров. Введите другое название
+            </mat-error>
+            <mat-error *ngIf="
+                getCreateForm.createTypeName.errors &&
+                getCreateForm.createTypeName.errors.required
+              ">
+              заполните поле
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <button type="submit" mat-stroked-button color="primary"
+          style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px;" class="ml-3" (click)="onCreate()">
+          добавить
+        </button>
+      </form>
+  
+      <form *ngIf="editFormFlag" [formGroup]="editTypeForm" style="display: flex;">
+        <div class="form-group">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>название</mat-label>
+            <input type="text" matInput formControlName="editTypeName" />
+            <mat-error *ngIf="
+            getEditForm.editTypeName.errors &&
+            getEditForm.editTypeName.errors.dublicate
+              ">
+              Не удалось добавить новый тип куров. Введите другое название
+            </mat-error>
+            <mat-error *ngIf="
+            getEditForm.editTypeName.errors &&
+            getEditForm.editTypeName.errors.required
+              ">
+              заполните поле
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <button type="submit" mat-stroked-button color="primary"
+          style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px;" class="ml-3" (click)="onEdit()">
+          изменить
+        </button>
+        <button type="submit" mat-stroked-button color="primary"
+          style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px;" class="ml-3" (click)="onCancel()">
+          отмена
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

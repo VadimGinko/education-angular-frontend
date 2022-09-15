@@ -1,0 +1,91 @@
+<div class="container" style="padding-bottom: 20px;">
+  <h1 style="margin-top: 20px;">Добавить новое задание</h1>
+  <div style="display: flex;">
+    <h4>Выберите тип задания:</h4>
+    <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" style="margin-top: 3px;"
+      [(ngModel)]="taskType">
+      <mat-radio-button style="margin-left: 20px;" class="example-radio-button" *ngFor="let taskType of taskTypes"
+        [value]="taskType">
+        <div *ngIf="taskType == 'MATERIAL'">Материал</div>
+        <div *ngIf="taskType == 'CODE'">Задача</div>
+        <div *ngIf="taskType == 'VIDEO'">Видео</div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div>
+    <form *ngIf="taskType == 'CODE'" [formGroup]="addTaskCodeForm">
+      <div class="form-group" style="display: flex; flex-direction: column;">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>название</mat-label>
+          <input type="text" matInput formControlName="name" />
+          <mat-error *ngIf="
+              getaddTaskCodeForm.name.errors &&
+              getaddTaskCodeForm.name.errors.required
+            ">
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-group">
+          <rich-text [control]="contentCode" [placeholder]="'Описание '"></rich-text>
+        </div>
+
+        <button type="submit" mat-stroked-button color="primary"
+          style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px;" (click)="addTaskCode()">
+          добавить
+        </button>
+      </div>
+    </form>
+
+    <form *ngIf="taskType == 'MATERIAL'" [formGroup]="addTaskMaterialForm">
+      <div class="form-group" style="display: flex; flex-direction: column;">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>название</mat-label>
+          <input type="text" matInput formControlName="name" />
+          <mat-error *ngIf="
+              getaddTaskMaterialForm.name.errors &&
+              getaddTaskMaterialForm.name.errors.required
+            ">
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-group">
+          <rich-text [control]="contentMaterial"></rich-text>
+        </div>
+
+        <button type="submit" mat-stroked-button color="primary"
+          style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px;" (click)="addTaskMaterial()">
+          добавить
+        </button>
+      </div>
+    </form>
+
+    <form *ngIf="taskType == 'VIDEO'" [formGroup]="videoForm" (ngSubmit)="addTaskVideo()" style="display: flex;">
+
+      <div class="form-group">
+        <label for="name">Название задачи</label>
+        <input formControlName="name" id="name" type="text" class="form-control" style="height: 43px;">
+        <div *ngIf="f.name.touched && f.name.invalid" class="alert alert-danger">
+          <div *ngIf="f.name.errors.required">Заполните поле</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-left: 10px;">
+        <label for="file">Видео Файл(*.mp4)</label>
+        <input formControlName="file" id="file" type="file" class="form-control" accept="video/mp4"
+          (change)="onFileChange($event)">
+        <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
+          <div *ngIf="f.file.errors.required">Видео Файл</div>
+        </div>
+      </div>
+
+      <button type="submit" mat-stroked-button color="primary"
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px; margin-top: 28px; height: 43px;"
+        class="ml-3">добавить</button>
+    </form>
+
+  </div>
+
+  <mat-progress-bar *ngIf="wait" mode="indeterminate"></mat-progress-bar>
+</div>

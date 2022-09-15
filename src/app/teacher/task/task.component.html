@@ -1,0 +1,177 @@
+<div class="container">
+  <div>
+    <!-- <quill-editor></quill-editor> -->
+    <h1 class="ml-3" style="margin-top: 10px;">Управление курсом</h1>
+    <form class="ml-3" [formGroup]="showTasksForm">
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Название курса</mat-label>
+          <mat-select formControlName="courseNames">
+            <mat-option *ngFor="let course of courses" [value]="course.id">
+              {{ course.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="
+              getCreateCourseForm.courseNames.errors &&
+              getCreateCourseForm.courseNames.errors.required
+            ">
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+        <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3" (click)="showTasks()">
+          показать
+        </button>
+      </div>
+    </form>
+
+    <form *ngIf="courseEdit" style="margin-left: 18px" [formGroup]="editCourseForm">
+      <div class="form-group" style="display: flex; flex-direction: column;">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>название</mat-label>
+          <input type="text" matInput formControlName="editCourseName" />
+          <mat-error
+            *ngIf="
+              getEditCourseForm.editCourseName.errors &&
+              getEditCourseForm.editCourseName.errors.required
+            "
+          >
+            заполните поле
+          </mat-error>
+          <mat-error
+            *ngIf="
+              getEditCourseForm.editCourseName.errors &&
+              getEditCourseForm.editCourseName.errors.dublicate
+            "
+          >
+            Курс с таким именем уже существует
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-group">
+          <rich-text [control]="editCourseDescription"></rich-text>
+        </div>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Типы курсов</mat-label>
+          <mat-select formControlName="editCourseType">
+            <mat-option
+              *ngFor="let courseType of courseTypeNames"
+              [value]="courseType.id"
+            >
+              {{ courseType.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="
+              getEditCourseForm.editCourseType.errors &&
+              getEditCourseForm.editCourseType.errors.required
+            "
+          >
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Статус</mat-label>
+          <mat-select formControlName="editCourseStatus">
+            <mat-option *ngFor="let status of activeStatuses" [value]="status">
+              {{ status }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="
+              getEditCourseForm.editCourseType.errors &&
+              getEditCourseForm.editCourseType.errors.required
+            "
+          >
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+        <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" (click)="onEdit()">
+          Изменить
+        </button>
+        <!-- <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8; margin-top: 10px;" (click)="deleteCourse()">
+          Удалить
+        </button> -->
+      </div>
+    </form>
+
+    <style>
+      table tr {
+        height: 60px;
+      }
+    </style>
+
+    <div *ngIf="tasks" style="margin-bottom: 30px;">
+      <h1 align="center">Задания курса</h1>
+      <table  mat-table #table cdkDropList (cdkDropListDropped)="dropTable($event)"  [cdkDropListData]="tasks" [dataSource]="tasks" class="mat-elevation-z8">
+        <ng-container matColumnDef="order">
+          <th mat-header-cell matTooltip="для изменения порядка задания просто перетащите его" *matHeaderCellDef>Порядок</th>
+          <td mat-cell matTooltip="для изменения порядка задания просто перетащите его" *matCellDef="let task">{{ task.order }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Название</th>
+          <td mat-cell *matCellDef="let task">{{ task.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="content">
+          <th mat-header-cell *matHeaderCellDef>Содержание</th>
+          <td mat-cell *matCellDef="let task">
+            <div *ngIf="task.type == 'CODE'">
+              {{ task.content.substr(0, 40) + ' ...' }}
+            </div>
+            <div *ngIf="task.type == 'MATERIAL'">
+              {{ task.content.substr(0, 40) + ' ...' }}
+            </div>
+            <div *ngIf="task.type == 'VIDEO'">
+              <a href="https://embed.api.video/vod/{{ task.content }}" target="_blank">Просмотреть</a>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Тип</th>
+          <td mat-cell *matCellDef="let task">
+            <div *ngIf="task.type == 'MATERIAL'">Материал</div>
+            <div *ngIf="task.type == 'VIDEO'">Видео</div>
+            <div *ngIf="task.type == 'CODE'">Задача</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="button">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let task">
+            <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3"
+              (click)="editTask(task)">
+              изменить
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="links">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let task">
+            <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3"
+              (click)="editLinks(task)">
+              полезные материалы
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"  ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"></tr>
+      </table>
+  
+      <div *ngIf="current == 1">
+        <edit-task></edit-task>
+      </div>
+      <div *ngIf="current == 2">
+        <edit-links></edit-links>
+      </div>
+    </div>
+    <div *ngIf="current == 0">
+      <add-task></add-task>
+    </div>
+  </div>
+</div>

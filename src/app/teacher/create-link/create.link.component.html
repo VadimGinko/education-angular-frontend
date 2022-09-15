@@ -1,0 +1,80 @@
+<div class="container" style="margin-top: 20px; padding-bottom: 20px;">
+  <div style="display: flex;">
+    <h4>Выберите тип материала:</h4>
+    <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" style="margin-top: 3px;"
+      [(ngModel)]="materialType">
+      <mat-radio-button style="margin-left: 20px;" class="example-radio-button"
+        *ngFor="let materialType of materialTypes" [value]="materialType">
+        <div *ngIf="materialType == 'FILE'">Файл</div>
+        <div *ngIf="materialType == 'LINK'">Ссылка</div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div>
+    <form *ngIf="materialType == 'LINK'" [formGroup]="createLinkForm">
+      <div class="form-group">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>название</mat-label>
+          <input type="text" matInput formControlName="createName" />
+          <mat-error *ngIf="
+              getCreateLinkForm.createName.errors &&
+              getCreateLinkForm.createName.errors.required
+            ">
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width" style="margin-left: 15px;" appearance="fill">
+          <mat-label>ссылка</mat-label>
+          <input type="text" matInput formControlName="createLinkUrl" />
+          <mat-error *ngIf="
+              getCreateLinkForm.createLinkUrl.errors &&
+              getCreateLinkForm.createLinkUrl.errors.required
+            ">
+            заполните поле
+          </mat-error>
+          <mat-error *ngIf="
+            getCreateLinkForm.createLinkUrl.errors &&
+            getCreateLinkForm.createLinkUrl.errors.pattern
+            ">
+            Неверный url
+          </mat-error>
+        </mat-form-field>
+        <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3" (click)="onCreate()">
+          добавить
+        </button>
+        <button type="submit" mat-stroked-button color="primary" style="opacity: 0.8" class="ml-3" (click)="cancel()">
+          отменить
+        </button>
+      </div>
+    </form>
+
+    <form *ngIf="materialType == 'FILE'" [formGroup]="videoForm" (ngSubmit)="addFile()" style="display: flex;">
+
+      <div class="form-group">
+        <label for="name">Название задачи</label>
+        <input formControlName="name" id="name" type="text" class="form-control" style="height: 43px;">
+        <div *ngIf="f.name.touched && f.name.invalid" class="alert alert-danger">
+          <div *ngIf="f.name.errors.required">Заполните поле</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-left: 10px;">
+        <label for="file">Файл(.pdf, .doc, .docx)</label>
+        <input formControlName="file" id="file" type="file" class="form-control" accept=".pdf, .doc, .docx"
+          (change)="onFileChange($event)">
+        <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
+          <div *ngIf="f.file.errors.required"></div>
+        </div>
+      </div>
+
+      <button type="submit" mat-stroked-button color="primary"
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px; margin-top: 28px; height: 43px;"
+        class="ml-3">добавить</button>
+      <button type="submit" mat-stroked-button color="primary"
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 34px; margin-top: 28px; height: 43px;" class="ml-3"
+        (click)="cancel()">отменить</button>
+    </form>
+  </div>
+
+  <mat-progress-bar *ngIf="wait" mode="indeterminate"></mat-progress-bar>
+</div>

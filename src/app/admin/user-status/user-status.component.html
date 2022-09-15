@@ -1,0 +1,58 @@
+<div class="container" style="margin-top: 50px;">
+  <div class="mt-3 mx-auto  ml-5" >
+    <h2>Изменить статус пользователя либо учителя</h2>
+    <h3>Будьте внимательны. При блокировке преподавателя курса автоматически блокируются все его курсы. У пользователей пропадёт возможность проходить его курсы.</h3>
+    <form [formGroup]="changeUserstatusForm">
+      <div class="form-group" style="display: flex;">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>почта</mat-label>
+          <input type="email" matInput formControlName="userMail" placeholder="mail@example.com" />
+          <mat-error *ngIf="
+              getchangeUserstatusForm.userMail.errors &&
+              getchangeUserstatusForm.userMail.errors.email
+            ">
+            неверный формат
+          </mat-error>
+          <mat-error *ngIf="
+              getchangeUserstatusForm.userMail.errors &&
+              getchangeUserstatusForm.userMail.errors.required
+            ">
+            заполните поле
+          </mat-error>
+          <mat-error *ngIf="
+              getchangeUserstatusForm.userMail.errors &&
+              getchangeUserstatusForm.userMail.errors.notSuchUser
+            ">
+            Такого пользователя нет в системе
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="ml-3">
+          <mat-label>Статус</mat-label>
+          <mat-select formControlName="activeStatuses">
+            <mat-option *ngFor="let activeStatus of activeStatuses" [value]="activeStatus">
+              <div *ngIf="activeStatus == 'ACTIVE'">Активный</div>
+              <div *ngIf="activeStatus == 'IN_ACTIVE'">Неактивный</div>
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="
+              getchangeUserstatusForm.activeStatuses.errors &&
+              getchangeUserstatusForm.activeStatuses.errors.required
+            ">
+            заполните поле
+          </mat-error>
+          <mat-error *ngIf="
+              getchangeUserstatusForm.activeStatuses.errors &&
+              getchangeUserstatusForm.activeStatuses.errors.dublicateStatus
+            ">
+            Пользователь уже имеет этот статус
+          </mat-error>
+        </mat-form-field>
+        <button type="submit" mat-stroked-button color="primary"
+          style="opacity: 0.8; margin-top: 10px; margin-bottom: 18px; " class="ml-3" (click)="onChange()">
+          изменить
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

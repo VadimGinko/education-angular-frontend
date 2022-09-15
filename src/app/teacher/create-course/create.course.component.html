@@ -1,0 +1,55 @@
+<div class="container" style="margin-top: 50px;">
+  <div class="mt-3 mx-auto" style="width: 780px;">
+    <h2 align="center">Создайте новый курс</h2>
+    <form [formGroup]="createCourseForm">
+      <div class="form-group" style="display: flex; align-items: stretch; flex-direction: column;">
+        <mat-form-field  appearance="fill">
+          <mat-label>название</mat-label>
+          <input type="text" matInput formControlName="createCourseName" />
+          <mat-error
+            *ngIf="
+              getCreateCourseForm.createCourseName.errors &&
+              getCreateCourseForm.createCourseName.errors.required
+            "
+          >
+            заполните поле
+          </mat-error>
+          <mat-error
+            *ngIf="
+              getCreateCourseForm.createCourseName.errors &&
+              getCreateCourseForm.createCourseName.errors.dublicate
+            "
+          >
+            Курс с таким именем уже существует
+          </mat-error>
+        </mat-form-field>
+        <div class="form-group">
+        <rich-text [control]="createCourseDescription"></rich-text>
+        </div>
+        <mat-form-field appearance="fill">
+          <mat-label>Тип курса</mat-label>
+          <mat-select formControlName="courseTypeNames">
+            <mat-option *ngFor="let courseType of courseTypeNames" [value]="courseType.name">
+              {{ courseType.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="
+              getCreateCourseForm.courseTypeNames.errors &&
+              getCreateCourseForm.courseTypeNames.errors.required
+            "
+          >
+            заполните поле
+          </mat-error>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="primary" style="opacity:0.8" (click)="onCreate()">
+          добавить
+        </button>
+      </div>
+    </form>
+  </div>
+  <h2 class="mt-3 mx-auto" style="width: 780px;">
+    После создания курса вы должны его активировать на странице <a href="/teacher/task">изменить курс</a>.
+    Но курс не может быть активирован пока в нём нет заданий.
+  </h2>
+</div>

@@ -1,0 +1,96 @@
+<style>
+  .example-card {
+    max-width: 400px;
+  }
+</style>
+<div style="display: flex; padding-top: 30px;">
+  <div style="width: 300px; margin-left: 5px">
+    <h2 align="center" style="margin-top: 5px">Ваши курсы</h2>
+    <div *ngIf="subscribedCourses.length == 0">Вы ещё не подписаны ни на один курс. Выберите курс из каталога.</div>
+    <div *ngFor="let course of subscribedCourses">
+      <mat-card
+        style="min-width: 310px; margin: 0 3px 3px 0; border: 1px solid #007bff; margin-bottom: 10px; box-shadow: none; padding: 30px 20px;"
+        class="example-card">
+        <mat-card-title style="font-size: 18px;">{{ course.name }}</mat-card-title>
+        <!-- <mat-card-content style="font-size: 12px;"><p>{{ course.description }}</p></mat-card-content> -->
+        <mat-progress-bar mode="determinate" value="{{course.percent}}"></mat-progress-bar>
+        <mat-card-actions *ngIf="course.percent == 100">
+          <mat-card-subtitle style="font-size: 10px; margin-left: 8px;">Поздравляем! вы успешно прошли этот курс</mat-card-subtitle>
+          <mat-card-subtitle style="font-size: 10px; margin-left: 8px;">Вы можете сбросить прогресс и пройти этот курс заново!</mat-card-subtitle>
+          <button color="primary" mat-stroked-button  (click)="removeProgress(course)">Пройти заново</button>
+        </mat-card-actions>
+        <mat-card-actions *ngIf="course.percent != 100">
+          <button color="primary" mat-stroked-button (click)="onGoToTask(course)">Перейти</button>
+          <button mat-button (click)="onUnsubscribe(course)">Отписаться</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+  <div style="flex: 1;">
+    <h2 align="center">Каталог курсов</h2>
+    <form [formGroup]="searchCourse" class="form-inline waves-light" style="padding: 20px; display: flex;"
+      mdbWavesEffect>
+      <div class="md-form mt-0" style="display: flex; flex: 1;">
+        <div style="flex:1">
+          <div style="display: flex;">
+            <div>
+              <h6>название курса</h6>
+              <input formControlName="name" [(ngModel)]="selectedOption1" class="form-control mr-sm-2" type="text" (input)="onSearchChange($event.target.value)" 
+                placeholder="Введите название курса" />
+            </div>
+            <div>
+              <h6>тип курса</h6>
+              <select [(ngModel)]="selectedOption2" (change)='onTypeChange($event.target.value)' formControlName="type" style=" margin-right: 10px;" class="form-control">
+                <option *ngFor="let courseType of courseTypes" [value]="courseType.name">
+                  {{ courseType.name }}
+                </option>
+              </select>
+            </div>
+            <div>
+              <h6>по дате</h6>
+              <select [(ngModel)]="selectedOption3" (change)='onDateChange($event.target.value)' formControlName="date" style=" margin-right: 10px;" class="form-control">
+                <option *ngFor="let type of upDownTypes" [value]="type">
+                  <div *ngIf="type == 'UP'">по Возрастанию</div>
+                  <div *ngIf="type == 'DOWN'">по Убыванию</div>
+                </option>
+              </select>
+            </div>
+            <button type="submit" mat-raised-button color="primary"
+              style="opacity:0.8;height: 40px; width: 160px;margin-top: 30px;" (click)="removeFilters()">
+              очистить фильтры
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div style="display: flex; flex: 2; flex-wrap: wrap; padding: 20px">
+      <div *ngFor="let course of unsubscribedCourses">
+        <mat-card style="
+            min-width: 335px;
+            min-height: 210px;
+            max-width: 300px;
+            margin: 0 20px 20px 0;
+            display: flex; flex-direction: column;
+          " class="example-card">
+          <div style="flex:1">
+            <div style="display: flex;">
+              <mat-card-title style="flex:1; font-size: 18px;">{{ course.type.name }}</mat-card-title>
+              <mat-card-subtitle style="flex:1; font-size: 10px;margin-top: 1px;">{{ course.createdOn }}
+              </mat-card-subtitle>
+              <ngb-rating [max]="5" (leave)="changeRating()" [readonly]="true" [(rate)]="course.rating"></ngb-rating>
+            </div>
+            <mat-card-content>{{ course.name }}</mat-card-content>
+          </div>
+          <mat-card-actions>
+            <button color="primary" mat-stroked-button (click)="onSubscribe(course)">
+              подписаться
+            </button>
+            <button mat-button (click)="onTeacherInfo(course)">
+              о преподавателе
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

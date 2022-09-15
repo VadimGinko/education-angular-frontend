@@ -1,0 +1,301 @@
+<div>
+  <!-- background-image: url(...); background-size: cover; background-repeat: no-repeat -->
+  <div style="background-color: rgba(0, 123, 255, 0.05); padding: 30px; padding-bottom: 60px;">
+    <div style="display: flex;">
+      <div class="m-top-20">
+        <h2 align="center" class="flex-1 mt-2">
+          {{ course.name }}
+        </h2>
+        <img style="width: 600px; border-radius: 4px; display: block" src="../../../assets/bg.jpg" />
+        <div class="flex-1 mt-2">
+          <strong>Учитель:</strong> {{ course.publisher.email }}, <a href="{{ course.publisher.link }}" target="_BLANK">соц. сеть</a>
+        </div>
+        <div class="d-flex" style="align-items: center;">
+          <p class="m-3" style="margin: 0 !important">Поставьте оценку нашему курсу</p>
+          <ngb-rating class="m-3" [max]="5" (leave)="changeRating()" [(rate)]="currentRate"></ngb-rating>
+        </div>
+      </div>
+      <div style="padding-left: 40px; padding-top: 46px;">
+        <div class="flex-1 mt-2">
+          <h3><strong>Описание:</strong></h3>
+          <div [innerHTML]="course.description"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="m-top-40 d-flex">
+    <div class="p-legt-right-40" style="margin-bottom: 120px;">
+      <h3 align="center" style="margin-top: 64px;"><strong>Задания курса</strong></h3>
+      <ul *ngFor="let task of course.tasks" style="width: 340px;">
+        <li id="task-{{ task.id }}" style="margin-top: 2px; width: 340px;">
+          <a (click)="onClick(task)" style="display: flex;">
+            <div *ngIf="task.type == 'MATERIAL'" style="width: 100px; height: 10px;"><svg
+                xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-code" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <polyline points="7 8 3 12 7 16"></polyline>
+                <polyline points="17 8 21 12 17 16"></polyline>
+                <line x1="14" y1="4" x2="10" y2="20"></line>
+              </svg></div>
+            <div *ngIf="task.type == 'VIDEO'" style="width: 100px; height: 10px;"><svg
+                xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-video" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z"></path>
+                <rect x="3" y="6" width="12" height="12" rx="2"></rect>
+              </svg></div>
+            <div *ngIf="task.type == 'CODE'" style="width: 100px; height: 10px;"><svg xmlns="http://www.w3.org/2000/svg"
+                class="icon icon-tabler icon-tabler-book" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
+                <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
+                <line x1="3" y1="6" x2="3" y2="19"></line>
+                <line x1="12" y1="6" x2="12" y2="19"></line>
+                <line x1="21" y1="6" x2="21" y2="19"></line>
+              </svg></div>
+            {{ task.name }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="isMaterial" class="flex-1 p-legt-right-100"
+      style="margin-left: 40px; margin-right: 40px; margin-top: 20px;">
+      <h1 align="center">{{ task.name }}</h1>
+      <div [innerHTML]="task.content"></div>
+
+      <h3 *ngIf="task.links.length != 0" style="margin-top: 20px;"><strong>Полезные материалы</strong></h3>
+      <div *ngFor="let link of task.links">
+        <div *ngIf="link.type == 'LINK'" style=" margin-left: -4px;">
+          <a href="{{ link.content }}" target="_BLANK">
+            <div style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path>
+                <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path>
+              </svg>
+              <h2 style="margin-top: -2px;">{{link.name }}</h2>
+            </div>
+          </a>
+        </div>
+
+        <div *ngIf="link.type == 'FILE'" style=" margin-left: -4px;">
+          <a href="http://172.16.0.221:8070/api/v1/tasks/file/{{ link.id }}" target="_BLANK">
+            <div style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24"
+                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                <path d="M9 17h6"></path>
+                <path d="M9 13h6"></path>
+              </svg>
+
+              <h2 style="margin-top: -2px;">{{link.name }}</h2>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <button *ngIf="!isTaskCompleted()" type="submit" mat-stroked-button color="primary" 
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 30px" (click)="completeMaterial(task)">
+        прочитано
+      </button>
+      <button *ngIf="isTaskCompleted()" type="submit" mat-stroked-button color="primary" disabled color="primary"
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 30px">
+        прочитано
+      </button>
+    </div>
+
+    <div *ngIf="isVideo" class="flex-1 p-legt-right-100"
+      style="margin-left: 40px; margin-right: 40px; margin-top: 20px;">
+      <h1 align="center">{{ task.name }}</h1>
+
+      <vm-player>
+        <vm-video cross-origin="true">
+          <source data-src="https://cdn.api.video/vod/{{ task.content }}/mp4/source.mp4" type="video/mp4" />
+          <track default kind="subtitles" src="https://media.vimejs.com/subs/english.vtt" srclang="en"
+            label="English" />
+        </vm-video>
+        <vm-default-ui no-click-to-play>
+        </vm-default-ui>
+      </vm-player>
+
+      <h3 *ngIf="task.links.length != 0" style="margin-top: 20px;"><strong>Полезные материалы</strong></h3>
+      <div *ngFor="let link of task.links">
+        <div *ngIf="link.type == 'LINK'" style=" margin-left: -4px;">
+          <a href="{{ link.content }}" target="_BLANK">
+            <div style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path>
+                <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path>
+              </svg>
+              <h2 style="margin-top: -2px;">{{link.name }}</h2>
+            </div>
+          </a>
+        </div>
+
+        <div *ngIf="link.type == 'FILE'" style=" margin-left: -4px;">
+          <a href="http://172.16.0.221:8070/api/v1/tasks/file/{{ link.id }}" target="_BLANK">
+            <div style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24"
+                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                <path d="M9 17h6"></path>
+                <path d="M9 13h6"></path>
+              </svg>
+
+              <h2 style="margin-top: -2px;">{{link.name }}</h2>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <button *ngIf="!isTaskCompleted()" type="submit" mat-stroked-button color="primary"
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 30px;" (click)="completeMaterial(task)">
+        просмотрено
+      </button>
+      <button *ngIf="isTaskCompleted()" type="submit" mat-stroked-button color="primary" disabled color="primary"
+        style="opacity: 0.8; margin-top: 10px; margin-bottom: 30px; ">
+        просмотрено
+      </button>
+    </div>
+
+    <div *ngIf="isCode" class="flex-1 p-legt-right-150">
+      <h1 align="center">{{ task.name }}</h1>
+      <div [innerHTML]="task.content"></div>
+      <div *ngIf="isTaskReady()">
+        <form [formGroup]="repositoryLinkCourse" class="d-flex">
+          <div class="form-group d-flex flex-1">
+            <mat-form-field class="example-full-width flex-1" appearance="fill">
+              <mat-label>Ссылка на репозиторий</mat-label>
+              <input type="text" matInput formControlName="link" />
+              <mat-error *ngIf="
+                  getRepositoryLinkCourse.link.errors &&
+                  getRepositoryLinkCourse.link.errors.required
+                ">
+                заполните поле
+              </mat-error>
+              <mat-error *ngIf="
+                  getRepositoryLinkCourse.link.errors &&
+                  getRepositoryLinkCourse.link.errors.pattern
+                ">
+                Неверный url
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <button type="submit" mat-stroked-button color="primary" class="ml-3" color="primary" style="
+              opacity: 0.8;
+              height: 40px;
+              margin-left: 20px;
+              margin-top: 12px;
+            " type="submit" mat-stroked-button color="primary" class="ml-3" (click)="addCodeAnswer(task)">
+            отправить
+          </button>
+        </form>
+      </div>
+      <div *ngIf="isTaskinReview()" style="margin-top: 20px;">
+        <h3><strong>Наш преподаватель в ближайшее время проверит ваш ответ</strong></h3>
+        <h3>
+          Cсылка на ваш репозиторий с ответом:
+          <a target="_blank" href="{{ codeAnswer.repositoryLink }}">{{
+            codeAnswer.repositoryLink
+            }}</a>
+        </h3>
+      </div>
+      <div *ngIf="isTaskRejected()">
+        <h3>
+          Вам нужно еще поработать над заданием, просмотрите комментарии в вашем
+          PR либо прочитайте комментарий оставленный нашим преподавателем
+        </h3>
+        <div *ngIf="codeAnswer.teacherComment">
+          <h3><strong>Комментарий:</strong> {{ codeAnswer.teacherComment }}</h3>
+        </div>
+        <form [formGroup]="repositoryLinkCourse" class="d-flex">
+          <div class="form-group" class="d-flex flex-1">
+            <mat-form-field class="example-full-width flex-1" appearance="fill">
+              <mat-label>Ссылка на репозиторий</mat-label>
+              <input type="text" matInput formControlName="link" />
+              <mat-error *ngIf="
+                  getRepositoryLinkCourse.link.errors &&
+                  getRepositoryLinkCourse.link.errors.required
+                ">
+                заполните поле
+              </mat-error>
+              <mat-error *ngIf="
+                  getRepositoryLinkCourse.link.errors &&
+                  getRepositoryLinkCourse.link.errors.pattern
+                ">
+                Неверный url
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <button mat-raised-button color="primary" style="
+            opacity: 0.8;
+            height: 40px;
+            margin-left: 20px;
+            margin-top: 12px;
+          " type="submit" (click)="editCodeAnswer()">
+            Отправить на проверку
+          </button>
+        </form>
+      </div>
+      <div *ngIf="isTaskCompleted()">
+        <h3>
+          Cсылка на ваш репозиторий с ответом:
+          <a target="_blank" href="codeAnswer.repositoryLink">{{ codeAnswer.repositoryLink }}</a>
+        </h3>
+        <h2>Вы выполнили это задание</h2>
+      </div>
+
+      <h3 *ngIf="task.links.length != 0" style="margin-top: 20px;"><strong>Полезные материалы</strong></h3>
+      <div *ngFor="let link of task.links">
+        <div *ngIf="link.type == 'LINK'" style=" margin-left: -4px;">
+          <a href="{{ link.content }}" target="_BLANK">
+            <div style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path>
+                <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path>
+              </svg>
+              <h2 style="margin-top: -2px;">{{link.name }}</h2>
+            </div>
+          </a>
+        </div>
+
+        <div *ngIf="link.type == 'FILE'" style=" margin-left: -4px;">
+          <a href="http://172.16.0.221:8070/api/v1/tasks/file/{{ link.id }}" target="_BLANK">
+            <div style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24"
+                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                <path d="M9 17h6"></path>
+                <path d="M9 13h6"></path>
+              </svg>
+
+              <h2 style="margin-top: -2px;">{{link.name }}</h2>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
